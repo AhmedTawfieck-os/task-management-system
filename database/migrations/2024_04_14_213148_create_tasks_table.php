@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('title'); 
             $table->longText('description'); 
             $table->date('due_date');
+            $table->enum('status', ['pending','completed','canceled']);
             $table->unsignedBigInteger('user_id')->nullable(); 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('set null'); 
             $table->json('dependencies')->nullable();

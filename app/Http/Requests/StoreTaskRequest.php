@@ -29,6 +29,7 @@ class StoreTaskRequest extends FormRequest
             "title" => "required|string", 
             "description" => "required|string", 
             "due_date" => "required|date|date_format:Y-m-d|after_or_equal:today", 
+            "status" => "required|in:pending,completed,canceled",
             "user_id" => "required|integer|exists:users,id",
             "dependencies" => "nullable|array", 
             "dependencies.*" => "integer|exists:tasks,id"             

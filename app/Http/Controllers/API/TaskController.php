@@ -6,10 +6,17 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreTaskRequest;
 use App\Models\Task;
+use App\Http\Resources\TaskResource;
 
 class TaskController extends Controller
 {
     //
+
+    public function index(Request $request)
+    {
+        $tasks= Task::all();
+        return TaskResource::collection($tasks);
+    }
 
     public function store(StoreTaskRequest $request)
     {
