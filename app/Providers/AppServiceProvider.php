@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use App\Models\User;
+use Illuminate\Support\Facades\Gate;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -13,6 +15,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        Gate::define('check-if-assignee-has-user-role', function (User $user, $userId) {
+            return User::where('id', $userId)->first()->hasRole('user');
+        });
         //
     }
 

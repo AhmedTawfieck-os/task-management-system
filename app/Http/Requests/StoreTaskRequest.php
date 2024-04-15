@@ -28,7 +28,7 @@ class StoreTaskRequest extends FormRequest
         return [
             "title" => "required|string", 
             "description" => "required|string", 
-            "due_date" => "required|date|date_format:d-m-Y|after_or_equal:today", 
+            "due_date" => "required|date|date_format:Y-m-d|after_or_equal:today", 
             "user_id" => "required|integer|exists:users,id",
             "dependencies" => "nullable|array", 
             "dependencies.*" => "integer|exists:tasks,id"             
