@@ -32,4 +32,11 @@ class TaskController extends Controller
         Task::create($data);
         return response()->Json(['message'=> 'Task Created successfully'],201);
     }
+
+
+    public function destroy(Task $task)
+    {
+        $task->delete(); 
+        return response()->Json(['message' => 'Task Deleted successfully'],200);
+    }
 }
