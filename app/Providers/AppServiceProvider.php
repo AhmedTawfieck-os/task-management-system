@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use App\Models\User;
+use App\Models\Task;
 use Illuminate\Support\Facades\Gate;
 
 class AppServiceProvider extends ServiceProvider
@@ -18,6 +19,15 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('check-if-assignee-has-user-role', function (User $user, $userId) {
             return User::where('id', $userId)->first()->hasRole('user');
         });
+
+       Gate::define('check-if-dependencies-are-not-completed', function (User $user, $task){
+            $dependenciesStatuses= Task::whereIn('id',Json_decode($task['dependencies']))->pluck('status')->toArray();
+            if(in_array('pending', $dependenciesStatuses) || in_array('canceled', $dependenciesStatuses)){
+                return false;
+            }
+            return true;
+       });
+       
         //
     }
 

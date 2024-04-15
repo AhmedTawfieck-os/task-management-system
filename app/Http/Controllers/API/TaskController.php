@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\StoreTaskRequest;
 use App\Models\Task;
 use App\Http\Resources\TaskResource;
+use App\Http\Requests\UpdateTaskRequest;
 
 class TaskController extends Controller
 {
@@ -25,7 +26,7 @@ class TaskController extends Controller
     public function store(StoreTaskRequest $request)
     {
         $data = $request->validated(); 
-        $this->authorize('check-if-assignee-has-user-role', $data['user_id']);
+        $this->authorize('check-if-assignee-has-user-role', $data['user_id']); //Gate defined in AppServiceProvider
         if(! empty ($data['dependencies'])){
             $data['dependencies']= json_encode($data['dependencies']); 
         }
@@ -33,6 +34,18 @@ class TaskController extends Controller
         return response()->Json(['message'=> 'Task Created successfully'],201);
     }
 
+    public function update(UpdateTaskRequest $request, Task $task)
+    {
+        $data = $request->validated();
+        if(! empty ($data['user_id'])){
+            $this->authorize('check-if-assignee-has-user-role', $data['user_id']);
+        }
+        if(! empty($data['status'])  && $data['status'] == 'completed' && $task['dependencies'] != null ){
+            $this->authorize('check-if-dependencies-are-not-completed', $task);//Gate defined in AppServiceProvider
+        }
+        $task->update($data); 
+        return response()->Json(['message' => 'Task Updated Successfully'],201);
+    }
 
     public function destroy(Task $task)
     {
