@@ -14,7 +14,11 @@ class TaskController extends Controller
 
     public function index(Request $request)
     {
-        $tasks= Task::all();
+        $tasks= Task::query(); 
+        $request['status'] == false ? $tasks : $tasks= $tasks->where('status', $request['status']);
+        $request['due_date'] == false? $tasks : $tasks= $tasks->where('due_date', $request['due_date']);
+        $request['assigned_user'] == false? $tasks : $tasks= $tasks->where('user_id', $request['assigned_user']); 
+        $tasks= $tasks->get();
         return TaskResource::collection($tasks);
     }
 
