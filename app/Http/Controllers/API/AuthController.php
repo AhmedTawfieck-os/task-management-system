@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Facades\Lang;
 
 class AuthController extends Controller
 {
@@ -24,12 +25,12 @@ class AuthController extends Controller
                                      'token_type' => 'Bearer',
                                      'user' => UserResource::make($user->load('roles'))],200);
         }
-        return response()->Json(['message'=> 'Invalid Credetials'],401);
+        return response()->Json(['message'=> Lang::get('messages.invalid-credentials')],401);
     }
 
     public function logout()
     {
         auth()->logout(); 
-        return response()->Json(['message'=> 'User logged out successfully'], 200);
+        return response()->Json(['message'=> Lang::get('messages.user-logout')], 200);
     }
 }
