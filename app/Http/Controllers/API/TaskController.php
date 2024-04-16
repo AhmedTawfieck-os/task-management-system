@@ -66,6 +66,7 @@ class TaskController extends Controller
     public function assignUserToTask(AssignUserToTaskRequest $request, Task $task)
     {
         $data= $request->validated();
+        $this->authorize('check-if-assignee-has-user-role', $data['user_id']);
         $task->update(["user_id" => $data["user_id"]]); 
         return response()->Json(['message' => 'Task assigned to user successfully'], 201);
     }
