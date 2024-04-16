@@ -17,10 +17,10 @@ class TaskController extends Controller
     {
         $tasks= Task::query(); 
         $request['status'] == false ? $tasks : $tasks= $tasks->where('status', $request['status']);
-        $request['due_date'] == false? $tasks : $tasks= $tasks->where('due_date', $request['due_date']);
+        $request['date_from'] == false || $request['date_to'] == false? $tasks : $tasks= $tasks->wherebetween('due_date', [$request['date_from'], $request['date_to']]);
         $request['assigned_user'] == false? $tasks : $tasks= $tasks->where('user_id', $request['assigned_user']); 
-        $tasks= $tasks->get();
-        return TaskResource::collection($tasks);
+        $tasks= $tasks->paginate(15);
+        return TaskResource::collection($tasks)->resource;
     }
 
     public function store(StoreTaskRequest $request)
