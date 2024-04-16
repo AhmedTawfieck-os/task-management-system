@@ -25,6 +25,7 @@ class TaskController extends Controller
 
     public function store(StoreTaskRequest $request)
     {
+        //when storing new task, should check on the dependencies status?
         $data = $request->validated(); 
         $this->authorize('check-if-assignee-has-user-role', $data['user_id']); //Gate defined in AppServiceProvider
         if(! empty ($data['dependencies'])){
