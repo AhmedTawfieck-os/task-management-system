@@ -43,7 +43,7 @@ class TaskController extends Controller
     {
         $data = $request->validated();
         if(! empty ($data['user_id'])){
-            $this->authorize('check-if-assignee-has-user-role', $data['user_id']);
+            $this->authorize('check-if-assignee-has-user-role', $data['user_id']);//Gate defined in AppServiceProvider
         }
         if(! empty($data['status'])  && $data['status'] == 'completed' && $task['dependencies'] != null ){
             $this->authorize('check-if-dependencies-are-not-completed', $task);//Gate defined in AppServiceProvider

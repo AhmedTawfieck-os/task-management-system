@@ -20,14 +20,20 @@ class AppServiceProvider extends ServiceProvider
             return User::where('id', $userId)->first()->hasRole('user');
         });
 
-       Gate::define('check-if-dependencies-are-not-completed', function (User $user, $task){
+        Gate::define('check-if-dependencies-are-not-completed', function (User $user, $task){
             $dependenciesStatuses= Task::whereIn('id',Json_decode($task['dependencies']))->pluck('status')->toArray();
             if(in_array('pending', $dependenciesStatuses) || in_array('canceled', $dependenciesStatuses)){
                 return false;
             }
             return true;
-       });
+        });
        
+        Gate::define('check-if-user-assigned-to-task', function(User $user, $task){
+            if($task->user_id != $user->id){
+                return false;
+            }
+            return true;
+        });
         //
     }
 
