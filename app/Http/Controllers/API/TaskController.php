@@ -9,6 +9,7 @@ use App\Models\Task;
 use App\Http\Resources\TaskResource;
 use App\Http\Requests\UpdateTaskRequest;
 use App\Http\Requests\AssignUserToTaskRequest;
+use Illuminate\Support\Facades\Lang;
 
 class TaskController extends Controller
 {
@@ -32,11 +33,11 @@ class TaskController extends Controller
             $this->authorize('check-if-assignee-has-user-role', $data['user_id']); //Gate defined in AppServiceProvider
         } 
         if(! empty ($data['dependencies'])){
-            $this->authorize('check-if-dependencies-are-not-completed', json_encode($data['dependencies']));
+            $this->authorize('check-if-dependencies-are-not-completed', json_encode($data['dependencies'])); //Gate defined in AppServiceProvider
             $data['dependencies']= json_encode($data['dependencies']); 
         }
         Task::create($data);
-        return response()->Json(['message'=> 'Task Created successfully'],201);
+        return response()->Json(['message'=> Lang::get('messages.task-created')],201);
     }
 
     public function show(Task $task)
@@ -54,13 +55,13 @@ class TaskController extends Controller
             $this->authorize('check-if-dependencies-are-not-completed', $task['dependencies']);//Gate defined in AppServiceProvider
         }
         $task->update($data); 
-        return response()->Json(['message' => 'Task Updated Successfully'],201);
+        return response()->Json(['message' => Lang::get('messages.task-updated')],201);
     }
 
     public function destroy(Task $task)
     {
         $task->delete(); 
-        return response()->Json(['message' => 'Task Deleted successfully'],200);
+        return response()->Json(['message' => Lang::get('messages.task-deleted')],200);
     }
 
     public function assignUserToTask(AssignUserToTaskRequest $request, Task $task)
@@ -68,6 +69,6 @@ class TaskController extends Controller
         $data= $request->validated();
         $this->authorize('check-if-assignee-has-user-role', $data['user_id']);
         $task->update(["user_id" => $data["user_id"]]); 
-        return response()->Json(['message' => 'Task assigned to user successfully'], 201);
+        return response()->Json(['message' => Lang::get('messages.task-assigned-to-user')], 201);
     }
 }
