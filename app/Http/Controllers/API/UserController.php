@@ -30,7 +30,7 @@ class UserController extends Controller
         $data= $request->validated(); 
         $this->authorize('check-if-user-assigned-to-task', $task);//Gate defined in AppServiceProvider
         if($data['status'] == 'completed' && $task['dependencies'] != null ){
-            $this->authorize('check-if-dependencies-are-not-completed', $task);//Gate defined in AppServiceProvider
+            $this->authorize('check-if-dependencies-are-not-completed', $task['dependencies']);//Gate defined in AppServiceProvider
         }
         $task->update($data);
         return response()->Json(['message' => 'Status updated successfully'],200);

@@ -29,6 +29,7 @@ class TaskController extends Controller
         $data = $request->validated(); 
         $this->authorize('check-if-assignee-has-user-role', $data['user_id']); //Gate defined in AppServiceProvider
         if(! empty ($data['dependencies'])){
+            $this->authorize('check-if-dependencies-are-not-completed', json_encode($data['dependencies']));
             $data['dependencies']= json_encode($data['dependencies']); 
         }
         Task::create($data);
@@ -47,7 +48,7 @@ class TaskController extends Controller
             $this->authorize('check-if-assignee-has-user-role', $data['user_id']);//Gate defined in AppServiceProvider
         }
         if(! empty($data['status'])  && $data['status'] == 'completed' && $task['dependencies'] != null ){
-            $this->authorize('check-if-dependencies-are-not-completed', $task);//Gate defined in AppServiceProvider
+            $this->authorize('check-if-dependencies-are-not-completed', $task['dependencies']);//Gate defined in AppServiceProvider
         }
         $task->update($data); 
         return response()->Json(['message' => 'Task Updated Successfully'],201);
