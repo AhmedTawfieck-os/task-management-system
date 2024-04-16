@@ -34,6 +34,11 @@ class TaskController extends Controller
         return response()->Json(['message'=> 'Task Created successfully'],201);
     }
 
+    public function show(Task $task)
+    {
+        return TaskResource::make($task);
+    }
+
     public function update(UpdateTaskRequest $request, Task $task)
     {
         $data = $request->validated();
