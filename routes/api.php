@@ -24,7 +24,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('login', [AuthController::class, 'login']);
 
 Route::group(["middleware" => "api"], function(){
-    Route::apiResource('tasks', TaskController::class)->middleware('role:manager');
+    Route::group(["middleware" => "role:manager"], function(){
+    Route::apiResource('tasks', TaskController::class);
+    Route::post('assign-user-to-task/{task}', [TaskController::class, 'assignUserToTask']);
+    });
     Route::group(["middleware" => "role:user"], function(){
         Route::get('retrieve-tasks-of-user', [UserController::class, 'getTasks']);
         Route::get('retrieve-single-task-of-user/{task}', [UserController::class, 'getSingleTask']); 
