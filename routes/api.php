@@ -27,7 +27,8 @@ Route::group(["middleware" => "auth:sanctum"], function(){
     Route::apiResource('tasks', TaskController::class)->middleware('role:manager');
     Route::group(["middleware" => "role:user"], function(){
         Route::get('retrieve-tasks-of-user', [UserController::class, 'getTasks']);
-        Route::get('retrieve-single-task-of-user/{task}', [UserController::class, 'getSingleTask']);   
+        Route::get('retrieve-single-task-of-user/{task}', [UserController::class, 'getSingleTask']); 
+        Route::put('update-task-status/{task}', [UserController::class, 'updateStatus']);  
     });
     Route::post('logout', [AuthController::class, 'logout']);
 });
