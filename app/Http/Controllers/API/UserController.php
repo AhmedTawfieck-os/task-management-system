@@ -13,6 +13,7 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Http\Requests\UserRequest;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\UpdateUserRequest;
 
 class UserController extends Controller
 {
@@ -61,12 +62,30 @@ class UserController extends Controller
     {
         $data = $request->validated(); 
         $data['password'] = Hash::make($request['password']);
-        User::create($data); 
+        $user=User::create($data);
+        $user->assignRole('user'); 
         return response()->Json(['message' => 'User created successfully'], 201);
+    }
+
+    public function update(UpdateUserRequest $request, User $user)
+    {
+        $data= $request->validated();
+        if($user->hasRole('user')){
+            if($request['password']){
+                $data['password'] = Hash::make($request['password']);
+            }
+            $user->update($data);
+            return response()->Json(['message' => 'User updated successfully'], 201);
+        }
+        return response()->Json(['message' => 'This member does not have role user'], 403); 
     }
 
     public function destroy(User $user)
     {
-        
+        if($user->hasRole('user')){
+            $user->delete();
+            return response()->Json(['message' => 'User deleted successfully'], 201);
+        }
+        return response()->Json(['message' => 'This member does not have role user'], 403);
     }
 }
