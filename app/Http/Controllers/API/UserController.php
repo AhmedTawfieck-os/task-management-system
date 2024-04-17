@@ -55,16 +55,16 @@ class UserController extends Controller
         if($user->hasRole('user')){
             return response()->Json([UserResource::make($user)],200);
         }
-        return response()->Json(['message' => 'This member does not have role user'], 403);
+        return response()->Json(['message' => Lang::get('messages.member-doesnot-have-role-user')], 403);
     }
-
+ 
     public function store(UserRequest $request)
     {
         $data = $request->validated(); 
         $data['password'] = Hash::make($request['password']);
         $user=User::create($data);
         $user->assignRole('user'); 
-        return response()->Json(['message' => 'User created successfully'], 201);
+        return response()->Json(['message' => Lang::get('messages.user-created')], 201);
     }
 
     public function update(UpdateUserRequest $request, User $user)
@@ -75,17 +75,17 @@ class UserController extends Controller
                 $data['password'] = Hash::make($request['password']);
             }
             $user->update($data);
-            return response()->Json(['message' => 'User updated successfully'], 201);
+            return response()->Json(['message' => Lang::get('messages.user-updated')], 201);
         }
-        return response()->Json(['message' => 'This member does not have role user'], 403); 
+        return response()->Json(['message' => Lang::get('messages.member-doesnot-have-role-user')], 403); 
     }
 
     public function destroy(User $user)
     {
         if($user->hasRole('user')){
             $user->delete();
-            return response()->Json(['message' => 'User deleted successfully'], 201);
+            return response()->Json(['message' => Lang::get('messages.user-deleted')], 201);
         }
-        return response()->Json(['message' => 'This member does not have role user'], 403);
+        return response()->Json(['message' => Lang::get('messages.member-doesnot-have-role-user')], 403);
     }
 }
