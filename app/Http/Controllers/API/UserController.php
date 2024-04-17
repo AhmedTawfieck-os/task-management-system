@@ -9,6 +9,10 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\TaskResource;
 use App\Http\Requests\UpdateTaskStatusRequest;
 use Illuminate\Support\Facades\Lang;
+use App\Http\Resources\UserResource;
+use App\Models\User;
+use App\Http\Requests\UserRequest;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -35,5 +39,34 @@ class UserController extends Controller
         }
         $task->update($data);
         return response()->Json(['message' => Lang::get('messages.task-status-changed')],200);
+    }
+
+    public function index(Request $request)
+    {
+        $users= User::query()->role('user'); 
+        $request['name'] == false? $users : $users= $users->where('name', 'like', '%'. $request['name']. '%'); 
+        $users= $users->paginate(15); 
+        return UserResource::collection($users)->resource;
+    }
+
+    public function show(User $user)
+    {
+        if($user->hasRole('user')){
+            return response()->Json([UserResource::make($user)],200);
+        }
+        return response()->Json(['message' => 'This member does not have role user'], 403);
+    }
+
+    public function store(UserRequest $request)
+    {
+        $data = $request->validated(); 
+        $data['password'] = Hash::make($request['password']);
+        User::create($data); 
+        return response()->Json(['message' => 'User created successfully'], 201);
+    }
+
+    public function destroy(User $user)
+    {
+        
     }
 }

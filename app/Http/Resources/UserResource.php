@@ -17,7 +17,8 @@ class UserResource extends JsonResource
         return [
             "name" => $this->name, 
             "email" => $this->email, 
-            "role" => $this->whenLoaded('roles')
+            "role" => $this->whenLoaded('roles'), 
+            "tasks" => TaskResource::collection($this->tasks),
         ];
     }
 }
